@@ -10,9 +10,8 @@ app.use(
     credentials: true,
   }),
 );
-app.use(express.urlencoded());
-
 app.use(express.json());
+app.use(express.urlencoded());
 app.all("/api/auth/*splat", toNodeHandler(auth));
 
 app.use("/", (req: Request, res: Response) => {
