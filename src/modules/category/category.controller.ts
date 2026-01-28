@@ -17,36 +17,60 @@ const getAllCategory = async (
   }
 };
 
-const createCategory = async (req: Request, res: Response) => {
-  const data = req.body;
+const createCategory = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const data = req.body;
 
-  const result = await categoryService.createCategory(data);
+    const result = await categoryService.createCategory(data);
 
-  res.status(201).json({
-    success: true,
-    data: result,
-  });
+    res.status(201).json({
+      success: true,
+      data: result,
+    });
+  } catch (error) {
+    next(error);
+  }
 };
 
-const updateCategory = async (req: Request, res: Response) => {
-  const data = req.body;
-  const { categoryId } = req.params;
-  const result = await categoryService.updateCategory(
-    data,
-    categoryId as string,
-  );
-  res.status(200).json({
-    success: true,
-    data: result,
-  });
+const updateCategory = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const data = req.body;
+    const { categoryId } = req.params;
+    const result = await categoryService.updateCategory(
+      data,
+      categoryId as string,
+    );
+    res.status(200).json({
+      success: true,
+      data: result,
+    });
+  } catch (error) {
+    next(error);
+  }
 };
-const deleteCategory = async (req: Request, res: Response) => {
-  const { categoryId } = req.params;
-  const result = await categoryService.deleteCategory(categoryId as string);
-  res.status(200).json({
-    success: true,
-    data: result,
-  });
+const deleteCategory = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const { categoryId } = req.params;
+    const result = await categoryService.deleteCategory(categoryId as string);
+    res.status(200).json({
+      success: true,
+      data: result,
+    });
+  } catch (error) {
+    next(error);
+  }
 };
 
 export const categoryController = {
