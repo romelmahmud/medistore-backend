@@ -14,31 +14,166 @@ datasource db {
 }
 
 model Category {
-  id          String  @id @default(uuid())
-  name        String  @unique
+  id          String     @id @default(uuid())
+  name        String     @unique
   description String?
+  imageUrl    String?
+  medicines   Medicine[]
+  createdAt   DateTime   @default(now())
 
-  medicines Medicine[]
-
-  createdAt DateTime @default(now())
+  @@map("category")
 }
 
 model Medicine {
-  id           String  @id @default(uuid())
-  name         String
-  description  String
-  price        Decimal @db.Decimal(10, 2)
-  stock        Int
-  manufacturer String
-  imageUrl     String?
+  id              String      @id @default(uuid())
+  name            String
+  description     String
+  price           Decimal     @db.Decimal(10, 2)
+  stock           Int
+  manufacturer    String
+  imageUrl        String?
+  manufactureDate DateTime?
+  expireDate      DateTime?
+  sellerId        String
+  categoryId      String
+  seller          User        @relation("SellerMedicines", fields: [sellerId], references: [id])
+  category        Category    @relation(fields: [categoryId], references: [id])
+  orderItems      OrderItem[]
+  reviews         Review[]
+  isActive        Boolean     @default(true)
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
 
-  sellerId   String
-  categoryId String
+  @@map("medicine")
+}
 
-  category Category @relation(fields: [categoryId], references: [id])
+model Order {
+  id              String        @id @default(uuid())
+  userId          String // Customer
+  sellerId        String // Single seller fulfilling the order
+  status          OrderStatus   @default(PLACED)
+  totalAmount     Decimal       @db.Decimal(10, 2)
+  shippingAddress String
+  paymentMethod   PaymentMethod @default(COD)
+  user            User          @relation("CustomerOrders", fields: [userId], references: [id])
+  seller          User          @relation("SellerOrders", fields: [sellerId], references: [id])
+  items           OrderItem[]
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
 
-  isActive Boolean @default(true)
+  @@map("order")
+}
 
+enum OrderStatus {
+  PLACED
+  PROCESSING
+  SHIPPED
+  DELIVERED
+  CANCELLED
+}
+
+enum PaymentMethod {
+  COD
+}
+
+model OrderItem {
+  id         String   @id @default(uuid())
+  orderId    String
+  medicineId String
+  quantity   Int
+  price      Decimal  @db.Decimal(10, 2) // copied from medicine at purchase time
+  order      Order    @relation(fields: [orderId], references: [id])
+  medicine   Medicine @relation(fields: [medicineId], references: [id])
+
+  @@map("order_item")
+}
+
+model Review {
+  id         String   @id @default(uuid())
+  rating     Int      @db.SmallInt
+  comment    String?
+  userId     String
+  medicineId String
+  user       User     @relation(fields: [userId], references: [id])
+  medicine   Medicine @relation(fields: [medicineId], references: [id])
+  createdAt  DateTime @default(now())
+
+  @@unique([userId, medicineId])
+  @@map("review")
+}
+
+model User {
+  id              String     @id
+  name            String
+  email           String
+  emailVerified   Boolean    @default(false)
+  image           String?
+  createdAt       DateTime   @default(now())
+  updatedAt       DateTime   @updatedAt
+  role            Role       @default(CUSTOMER)
+  phone           String?
+  status          String?    @default("ACTIVE")
+  sessions        Session[]
+  accounts        Account[]
+  reviews         Review[]
+  medicines       Medicine[] @relation("SellerMedicines") // Seller inventory
+  orders          Order[]    @relation("CustomerOrders") // Orders placed (customer)
+  fulfilledOrders Order[]    @relation("SellerOrders") // Orders fulfilled (seller
+
+  @@unique([email])
+  @@map("user")
+}
+
+enum Role {
+  CUSTOMER
+  SELLER
+  ADMIN
+}
+
+model Session {
+  id        String   @id
+  expiresAt DateTime
+  token     String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  ipAddress String?
+  userAgent String?
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([token])
+  @@index([userId])
+  @@map("session")
+}
+
+model Account {
+  id                    String    @id
+  accountId             String
+  providerId            String
+  userId                String
+  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  accessToken           String?
+  refreshToken          String?
+  idToken               String?
+  accessTokenExpiresAt  DateTime?
+  refreshTokenExpiresAt DateTime?
+  scope                 String?
+  password              String?
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+
+  @@index([userId])
+  @@map("account")
+}
+
+model Verification {
+  id         String   @id
+  identifier String
+  value      String
+  expiresAt  DateTime
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([identifier])
+  @@map("verification")
 }
