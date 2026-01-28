@@ -28,7 +28,30 @@ const createCategory = async (req: Request, res: Response) => {
   });
 };
 
+const updateCategory = async (req: Request, res: Response) => {
+  const data = req.body;
+  const { categoryId } = req.params;
+  const result = await categoryService.updateCategory(
+    data,
+    categoryId as string,
+  );
+  res.status(200).json({
+    success: true,
+    data: result,
+  });
+};
+const deleteCategory = async (req: Request, res: Response) => {
+  const { categoryId } = req.params;
+  const result = await categoryService.deleteCategory(categoryId as string);
+  res.status(200).json({
+    success: true,
+    data: result,
+  });
+};
+
 export const categoryController = {
   createCategory,
   getAllCategory,
+  updateCategory,
+  deleteCategory,
 };
