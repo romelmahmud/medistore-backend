@@ -5,6 +5,7 @@ import { auth } from "./lib/auth";
 import { errorHandler } from "./middleware/errorHandler";
 import { categoryRouter } from "./modules/category/category.route";
 import { medicineRouter } from "./modules/medicine/medicine.route";
+import { userRouter } from "./modules/user/user.route";
 
 const app: Application = express();
 app.use(
@@ -23,6 +24,7 @@ app.all("/api/auth/*splat", toNodeHandler(auth));
 
 app.use("/api/v1/categories", categoryRouter);
 app.use("/api/v1/medicines", medicineRouter);
+app.use("/api/v1/users", userRouter);
 
 app.use(errorHandler);
 
