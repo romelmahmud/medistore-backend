@@ -1,5 +1,6 @@
 import { Category } from "../../../generated/prisma/client";
 import { prisma } from "../../lib/prisma";
+import { CategoryUpdateType } from "./category.type";
 
 const createCategory = async (payload: Category) => {
   const result = await prisma.category.create({
@@ -14,7 +15,7 @@ const getAllCategory = async () => {
 };
 
 const updateCategory = async (
-  payload: Partial<Category>,
+  payload: CategoryUpdateType,
   categoryId: string,
 ) => {
   const result = await prisma.category.update({
