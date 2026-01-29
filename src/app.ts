@@ -21,8 +21,8 @@ app.all("/api/auth/*splat", toNodeHandler(auth));
 //   res.json({ message: "Welcome MediStore Home" });
 // });
 
-app.use("/api/v1/category", categoryRouter);
-app.use("/api/v1/medicine", medicineRouter);
+app.use("/api/v1/categories", categoryRouter);
+app.use("/api/v1/medicines", medicineRouter);
 
 app.use(errorHandler);
 

@@ -443,6 +443,12 @@ function getRandomDates() {
   expireDate.setFullYear(expireDate.getFullYear() + getRandomInt(1, 3));
   return { manufactureDate, expireDate };
 }
+function getMedicineImage(name: string) {
+  const safeName = name.toLowerCase().replace(/\s+/g, "-");
+  return `https://dummyimage.com/400x400/edf2f7/1a202c&text=${encodeURIComponent(
+    safeName,
+  )}`;
+}
 
 // Seed function
 async function seedMedicines() {
@@ -467,6 +473,7 @@ async function seedMedicines() {
             expireDate,
             categoryId: category.id,
             description: med.description,
+            imageUrl: getMedicineImage(med.name),
           },
           create: {
             name: med.name,
@@ -478,6 +485,7 @@ async function seedMedicines() {
             manufactureDate,
             expireDate,
             categoryId: category.id,
+            imageUrl: getMedicineImage(med.name),
           },
         });
       }
