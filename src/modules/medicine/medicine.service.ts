@@ -1,4 +1,5 @@
-import { Medicine } from "../../../generated/prisma/client";
+import { Medicine, Prisma } from "../../../generated/prisma/client";
+import { MedicineWhereInput } from "../../../generated/prisma/models";
 import { prisma } from "../../lib/prisma";
 import { MedicineUpdateType } from "./medicine.type";
 
@@ -10,9 +11,83 @@ const createMedicine = async (payload: Medicine) => {
   return result;
 };
 
-const getAllMedicine = async () => {
-  // todo : add filter, sort
-  const result = await prisma.medicine.findMany();
+const getAllMedicine = async ({
+  search,
+  category,
+  manufacturer,
+  min,
+  max,
+}: {
+  search: string | undefined;
+  category: string | undefined;
+  manufacturer: string | undefined;
+  min: number | undefined;
+  max: number | undefined;
+}) => {
+  const addCondition: MedicineWhereInput[] = [];
+
+  if (search) {
+    addCondition.push({
+      OR: [
+        {
+          name: {
+            contains: search as string,
+            mode: "insensitive",
+          },
+        },
+        {
+          description: {
+            contains: search as string,
+            mode: "insensitive",
+          },
+        },
+      ],
+    });
+  }
+
+  if (category) {
+    addCondition.push({
+      category: {
+        name: category,
+      },
+    });
+  }
+
+  if (manufacturer) {
+    addCondition.push({
+      manufacturer: {
+        contains: manufacturer,
+        mode: "insensitive",
+      },
+    });
+  }
+
+  if (
+    (min !== undefined && !Number.isNaN(min)) ||
+    (max !== undefined && !Number.isNaN(max))
+  ) {
+    addCondition.push({
+      price: {
+        ...(min !== undefined &&
+          !Number.isNaN(min) && {
+            gte: new Prisma.Decimal(min),
+          }),
+        ...(max !== undefined &&
+          !Number.isNaN(max) && {
+            lte: new Prisma.Decimal(max),
+          }),
+      },
+    });
+  }
+
+  const result = await prisma.medicine.findMany({
+    where: {
+      AND: addCondition,
+    },
+    include: {
+      category: true,
+    },
+  });
 
   const formattedResult = result.map((med) => ({
     ...med,

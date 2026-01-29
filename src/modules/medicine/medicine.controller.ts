@@ -25,7 +25,23 @@ const getAllMedicine = async (
   next: NextFunction,
 ) => {
   try {
-    const result = await medicineService.getAllMedicine();
+    const search = req.query.search as string | undefined;
+    const category = req.query.category as string | undefined;
+    const manufacturer = req.query.manufacturer as string | undefined;
+    const minPrice = req.query.minPrice as string | undefined;
+    const maxPrice = req.query.maxPrice as string | undefined;
+    const min = minPrice ? Number(minPrice) : undefined;
+    const max = maxPrice ? Number(maxPrice) : undefined;
+
+    console.log(min, max);
+
+    const result = await medicineService.getAllMedicine({
+      search,
+      category,
+      manufacturer,
+      min,
+      max,
+    });
 
     res.status(200).json({
       success: true,
