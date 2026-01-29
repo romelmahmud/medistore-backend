@@ -33,8 +33,6 @@ const getAllMedicine = async (
     const min = minPrice ? Number(minPrice) : undefined;
     const max = maxPrice ? Number(maxPrice) : undefined;
 
-    console.log(min, max);
-
     const result = await medicineService.getAllMedicine({
       search,
       category,

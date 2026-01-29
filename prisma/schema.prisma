@@ -113,7 +113,7 @@ model User {
   updatedAt       DateTime   @updatedAt
   role            Role?      @default(CUSTOMER)
   phone           String?
-  status          String?    @default("ACTIVE")
+  status          Status?    @default(ACTIVE)
   sessions        Session[]
   accounts        Account[]
   reviews         Review[]
@@ -129,6 +129,11 @@ enum Role {
   CUSTOMER
   SELLER
   ADMIN
+}
+
+enum Status {
+  ACTIVE
+  BANED
 }
 
 model Session {
