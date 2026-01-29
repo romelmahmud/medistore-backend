@@ -1,6 +1,24 @@
 import { NextFunction, Request, Response } from "express";
 import { medicineService } from "./medicine.service";
 
+const createMedicine = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const data = req.body;
+    const result = await medicineService.createMedicine(data);
+
+    res.status(200).json({
+      success: true,
+      data: result,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 const getAllMedicine = async (
   req: Request,
   res: Response,
@@ -84,4 +102,5 @@ export const medicineController = {
   getSingleMedicine,
   updateMedicine,
   deleteMedicine,
+  createMedicine,
 };

@@ -1,5 +1,14 @@
+import { Medicine } from "../../../generated/prisma/client";
 import { prisma } from "../../lib/prisma";
 import { MedicineUpdateType } from "./medicine.type";
+
+const createMedicine = async (payload: Medicine) => {
+  const result = await prisma.medicine.create({
+    data: payload,
+  });
+
+  return result;
+};
 
 const getAllMedicine = async () => {
   // todo : add filter, sort
@@ -57,4 +66,5 @@ export const medicineService = {
   getSingleMedicine,
   updateMedicine,
   deleteMedicine,
+  createMedicine,
 };
