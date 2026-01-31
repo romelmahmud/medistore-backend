@@ -1,26 +1,15 @@
 import { prisma } from "../lib/prisma";
 import { UserRole } from "../middleware/auth";
 
-const AUTH_BASE_URL = "http://localhost:8000";
-
-type AdminSeedData = {
-  name: string;
-  email: string;
-  password: string;
-  role: UserRole;
-};
+const AUTH_BASE_URL = process.env.BETTER_AUTH_URL!;
+const ADMIN_EMAIL = process.env.ADMIN_EMAIL!;
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD!;
+const ADMIN_NAME = "System Admin";
 
 async function seedAdmin() {
-  const adminData: AdminSeedData = {
-    name: "Admin Romel",
-    email: "admin.romel@mail.com",
-    password: "admin@1234#",
-    role: UserRole.ADMIN,
-  };
-
   try {
     const existingUser = await prisma.user.findUnique({
-      where: { email: adminData.email },
+      where: { email: ADMIN_EMAIL },
       select: { id: true },
     });
 
@@ -36,9 +25,9 @@ async function seedAdmin() {
         Origin: AUTH_BASE_URL,
       },
       body: JSON.stringify({
-        email: adminData.email,
-        password: adminData.password,
-        name: adminData.name,
+        email: ADMIN_EMAIL,
+        password: ADMIN_PASSWORD,
+        name: ADMIN_NAME,
       }),
     });
 
@@ -48,9 +37,9 @@ async function seedAdmin() {
     }
 
     await prisma.user.update({
-      where: { email: adminData.email },
+      where: { email: ADMIN_EMAIL },
       data: {
-        role: adminData.role,
+        role: UserRole.ADMIN,
         emailVerified: true,
       },
     });
@@ -58,7 +47,9 @@ async function seedAdmin() {
     console.log("🚀 Admin user seeded successfully");
   } catch (error) {
     console.error("❌ Admin seeding failed:", error);
-    process.exitCode = 1;
+    process.exit(1);
+  } finally {
+    await prisma.$disconnect();
   }
 }
 
