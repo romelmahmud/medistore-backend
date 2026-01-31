@@ -184,4 +184,23 @@ export const auth = betterAuth({
       clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
     },
   },
+  // preventing role to be ADMIN during sign up
+  databaseHooks: {
+    user: {
+      create: {
+        before: async (user, ctx) => {
+          const allowedRoles = ["CUSTOMER", "SELLER"];
+          user.role = allowedRoles.includes(user.role as string)
+            ? user.role
+            : "CUSTOMER";
+          return {
+            data: {
+              ...user,
+              role: user.role,
+            },
+          };
+        },
+      },
+    },
+  },
 });

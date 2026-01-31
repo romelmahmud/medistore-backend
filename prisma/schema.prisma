@@ -35,29 +35,28 @@ model Medicine {
   imageUrl        String?
   manufactureDate DateTime?
   expireDate      DateTime?
-  sellerId        String?
   categoryId      String
-  seller          User?       @relation("SellerMedicines", fields: [sellerId], references: [id])
   category        Category    @relation(fields: [categoryId], references: [id])
   orderItems      OrderItem[]
   reviews         Review[]
   isActive        Boolean     @default(true)
   createdAt       DateTime    @default(now())
   updatedAt       DateTime    @updatedAt
+  user            User?       @relation(fields: [userId], references: [id])
+  userId          String?
 
   @@map("medicine")
 }
 
 model Order {
-  id              String        @id @default(uuid())
-  userId          String // Customer
-  sellerId        String // Single seller fulfilling the order
+  id     String @id @default(uuid())
+  userId String // Customer
+
   status          OrderStatus   @default(PLACED)
   totalAmount     Decimal       @db.Decimal(10, 2)
   shippingAddress String
   paymentMethod   PaymentMethod @default(COD)
   user            User          @relation("CustomerOrders", fields: [userId], references: [id])
-  seller          User          @relation("SellerOrders", fields: [sellerId], references: [id])
   items           OrderItem[]
   createdAt       DateTime      @default(now())
   updatedAt       DateTime      @updatedAt
@@ -104,22 +103,23 @@ model Review {
 }
 
 model User {
-  id              String     @id
-  name            String
-  email           String
-  emailVerified   Boolean    @default(false)
-  image           String?
-  createdAt       DateTime   @default(now())
-  updatedAt       DateTime   @updatedAt
-  role            Role?      @default(CUSTOMER)
-  phone           String?
-  status          Status?    @default(ACTIVE)
-  sessions        Session[]
-  accounts        Account[]
-  reviews         Review[]
-  medicines       Medicine[] @relation("SellerMedicines") // Seller inventory
-  orders          Order[]    @relation("CustomerOrders") // Orders placed (customer)
-  fulfilledOrders Order[]    @relation("SellerOrders") // Orders fulfilled (seller
+  id            String    @id
+  name          String
+  email         String
+  emailVerified Boolean   @default(false)
+  image         String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  role          Role      @default(CUSTOMER)
+  phone         String?
+  status        Status?   @default(ACTIVE)
+  sessions      Session[]
+  accounts      Account[]
+  reviews       Review[]
+
+  orders Order[] @relation("CustomerOrders") // Orders placed (customer)
+
+  medicines Medicine[]
 
   @@unique([email])
   @@map("user")
@@ -133,7 +133,7 @@ enum Role {
 
 enum Status {
   ACTIVE
-  BANED
+  BANNED
 }
 
 model Session {
