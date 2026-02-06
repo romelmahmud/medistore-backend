@@ -101,6 +101,9 @@ const getSingleMedicine = async (medicineId: string) => {
     where: {
       id: medicineId,
     },
+    include: {
+      category: true,
+    },
   });
 
   return {
