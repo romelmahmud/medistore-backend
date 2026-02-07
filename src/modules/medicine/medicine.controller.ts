@@ -1,4 +1,5 @@
 import { NextFunction, Request, Response } from "express";
+import { paginationSortingHelper } from "../../helpers/paginationSortingHelper";
 import { medicineService } from "./medicine.service";
 
 const createMedicine = async (
@@ -33,17 +34,25 @@ const getAllMedicine = async (
     const min = minPrice ? Number(minPrice) : undefined;
     const max = maxPrice ? Number(maxPrice) : undefined;
 
+    const options = paginationSortingHelper(req.query);
+
     const result = await medicineService.getAllMedicine({
       search,
       category,
       manufacturer,
       min,
       max,
+      page: options.page,
+      limit: options.limit,
+      skip: options.skip,
+      sortBy: options.sortBy,
+      sortOrder: options.sortOrder,
     });
 
     res.status(200).json({
       success: true,
-      data: result,
+      meta: result.meta,
+      data: result.data,
     });
   } catch (error) {
     next(error);

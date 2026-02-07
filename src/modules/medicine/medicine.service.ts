@@ -17,12 +17,22 @@ const getAllMedicine = async ({
   manufacturer,
   min,
   max,
+  page,
+  limit,
+  skip,
+  sortBy,
+  sortOrder,
 }: {
   search: string | undefined;
   category: string | undefined;
   manufacturer: string | undefined;
   min: number | undefined;
   max: number | undefined;
+  page: number;
+  limit: number;
+  skip: number;
+  sortBy: string;
+  sortOrder: "desc" | "asc";
 }) => {
   const addCondition: MedicineWhereInput[] = [];
 
@@ -81,11 +91,22 @@ const getAllMedicine = async ({
   }
 
   const result = await prisma.medicine.findMany({
+    take: limit,
+    skip,
     where: {
       AND: addCondition,
     },
     include: {
       category: true,
+    },
+    orderBy: {
+      [sortBy]: sortOrder,
+    },
+  });
+
+  const count = await prisma.medicine.count({
+    where: {
+      AND: addCondition,
     },
   });
 
@@ -93,7 +114,15 @@ const getAllMedicine = async ({
     ...med,
     price: Number(med.price),
   }));
-  return formattedResult;
+  return {
+    meta: {
+      total: count,
+      page,
+      limit,
+      totalPages: Math.ceil(count / limit),
+    },
+    data: formattedResult,
+  };
 };
 
 const getSingleMedicine = async (medicineId: string) => {
