@@ -33,7 +33,13 @@ const getAllMedicine = async (
     const maxPrice = req.query.maxPrice as string | undefined;
     const min = minPrice ? Number(minPrice) : undefined;
     const max = maxPrice ? Number(maxPrice) : undefined;
-
+    const isActive = req.query.isActive
+      ? req.query.isActive === "true"
+        ? true
+        : req.query.isActive === "false"
+          ? false
+          : undefined
+      : undefined;
     const options = paginationSortingHelper(req.query);
 
     const result = await medicineService.getAllMedicine({
@@ -47,6 +53,7 @@ const getAllMedicine = async (
       skip: options.skip,
       sortBy: options.sortBy,
       sortOrder: options.sortOrder,
+      isActive,
     });
 
     res.status(200).json({

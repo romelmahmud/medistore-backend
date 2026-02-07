@@ -22,6 +22,7 @@ const getAllMedicine = async ({
   skip,
   sortBy,
   sortOrder,
+  isActive,
 }: {
   search: string | undefined;
   category: string | undefined;
@@ -33,6 +34,7 @@ const getAllMedicine = async ({
   skip: number;
   sortBy: string;
   sortOrder: "desc" | "asc";
+  isActive: boolean | undefined;
 }) => {
   const addCondition: MedicineWhereInput[] = [];
 
@@ -87,6 +89,11 @@ const getAllMedicine = async ({
             lte: new Prisma.Decimal(max),
           }),
       },
+    });
+  }
+  if (typeof isActive === "boolean") {
+    addCondition.push({
+      isActive,
     });
   }
 
