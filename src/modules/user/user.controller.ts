@@ -1,13 +1,17 @@
 import { NextFunction, Request, Response } from "express";
+import { paginationSortingHelper } from "../../helpers/paginationSortingHelper";
 import { userService } from "./user.service";
 
 const getAllUser = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const result = await userService.getAllUser();
+    const { limit, skip, page } = paginationSortingHelper(req.query);
+
+    const result = await userService.getAllUser({ limit, skip, page });
 
     res.status(200).json({
       success: true,
-      data: result,
+      meta: result.meta,
+      data: result.data,
     });
   } catch (error) {
     next(error);

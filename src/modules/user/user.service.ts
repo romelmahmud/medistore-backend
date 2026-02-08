@@ -1,9 +1,33 @@
 import { Status } from "../../../generated/prisma/enums";
 import { prisma } from "../../lib/prisma";
 
-const getAllUser = async () => {
-  const result = await prisma.user.findMany();
-  return result;
+const getAllUser = async ({
+  limit,
+  skip,
+  page,
+}: {
+  limit: number;
+  skip: number;
+  page: number;
+}) => {
+  const result = await prisma.user.findMany({
+    skip,
+    take: limit,
+    orderBy: {
+      createdAt: "desc",
+    },
+  });
+
+  const count = await prisma.user.count();
+  return {
+    meta: {
+      total: count,
+      page,
+      limit,
+      totalPages: Math.ceil(count / limit),
+    },
+    data: result,
+  };
 };
 
 const updateUserStatus = async (userId: string, status: Status) => {
