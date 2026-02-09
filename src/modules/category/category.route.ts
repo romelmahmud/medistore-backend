@@ -5,6 +5,11 @@ import { categoryController } from "./category.controller";
 const router = express.Router();
 
 router.get("/", categoryController.getAllCategory);
+router.get(
+  "/:categoryId",
+  auth(UserRole.ADMIN),
+  categoryController.getCategoryById,
+);
 router.post("/", auth(UserRole.ADMIN), categoryController.createCategory);
 router.patch(
   "/:categoryId",
