@@ -10,7 +10,11 @@ const createCategory = async (payload: Category) => {
 };
 
 const getAllCategory = async () => {
-  const result = await prisma.category.findMany();
+  const result = await prisma.category.findMany({
+    orderBy: {
+      createdAt: "desc",
+    },
+  });
   return result;
 };
 
