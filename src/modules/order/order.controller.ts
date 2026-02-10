@@ -44,7 +44,35 @@ const getAllOrders = async (
     next(error);
   }
 };
+
+const getCustomerOrders = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const data = req.body;
+    const userId = req.user?.id;
+    const { customerId } = req.params;
+    // checking logged in user is getting his/her orders data
+    if (userId !== customerId) {
+      return res.status(401).json({
+        success: false,
+        message: "Unauthorized",
+      });
+    }
+
+    const result = await orderService.getCustomerOrders(customerId as string);
+    res.status(200).json({
+      success: true,
+      data: result,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
 export const orderController = {
   createOrder,
   getAllOrders,
+  getCustomerOrders,
 };

@@ -98,7 +98,17 @@ const getAllOrders = async () => {
   return result;
 };
 
+const getCustomerOrders = async (userId: string) => {
+  const result = await prisma.order.findMany({
+    where: {
+      userId,
+    },
+  });
+  return result;
+};
+
 export const orderService = {
   createOrder,
   getAllOrders,
+  getCustomerOrders,
 };

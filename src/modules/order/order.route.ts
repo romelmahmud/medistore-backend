@@ -10,5 +10,10 @@ router.get(
   auth(UserRole.ADMIN, UserRole.SELLER),
   orderController.getAllOrders,
 );
+router.get(
+  "/customer/:customerId",
+  auth(UserRole.CUSTOMER),
+  orderController.getCustomerOrders,
+);
 
 export const orderRouter: Router = router;
