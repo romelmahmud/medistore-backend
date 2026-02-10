@@ -11,6 +11,11 @@ router.get(
   orderController.getAllOrders,
 );
 router.get(
+  "/:orderId",
+  auth(UserRole.ADMIN, UserRole.SELLER, UserRole.CUSTOMER),
+  orderController.getOrderById,
+);
+router.get(
   "/customer/:customerId",
   auth(UserRole.CUSTOMER),
   orderController.getCustomerOrders,

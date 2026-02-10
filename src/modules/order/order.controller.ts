@@ -71,8 +71,28 @@ const getCustomerOrders = async (
     next(error);
   }
 };
+
+const getOrderById = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const { orderId } = req.params;
+
+    const result = await orderService.getOrderById(orderId as string);
+    res.status(200).json({
+      success: true,
+      data: result,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 export const orderController = {
   createOrder,
   getAllOrders,
   getCustomerOrders,
+  getOrderById,
 };
