@@ -58,7 +58,9 @@ const createOrder = async ({
     //  Creating Order
     const order = await tx.order.create({
       data: {
-        userId,
+        user: {
+          connect: { id: userId },
+        },
         shippingAddress,
         totalAmount,
         paymentMethod: "COD",

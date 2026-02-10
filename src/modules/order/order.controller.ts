@@ -3,9 +3,15 @@ import { orderService } from "./order.service";
 
 const createOrder = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const userId = req.user?.id as string;
-
     const data = req.body;
+    const userId = req.user?.id;
+
+    if (!userId) {
+      return res.status(401).json({
+        success: false,
+        message: "Unauthorized",
+      });
+    }
     const { shippingAddress, items } = data;
 
     const result = await orderService.createOrder({
@@ -13,7 +19,7 @@ const createOrder = async (req: Request, res: Response, next: NextFunction) => {
       shippingAddress,
       items,
     });
-
+    console.log("controller", result);
     res.status(200).json({
       success: true,
       data: result,
