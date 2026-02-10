@@ -19,7 +19,7 @@ export const paginationSortingHelper = (options: IOptions): IOptionsResult => {
   const skip = (page - 1) * limit;
   const sortBy = options.sortBy || "createdAt";
   const sortOrder: "desc" | "asc" =
-    options.sortOrder === "desc" ? "desc" : "asc";
+    options.sortOrder === "asc" ? "asc" : "desc";
 
   return {
     page,
