@@ -15,6 +15,11 @@ router.get(
   auth(UserRole.ADMIN, UserRole.SELLER, UserRole.CUSTOMER),
   orderController.getOrderById,
 );
+router.patch(
+  "/:orderId",
+  auth(UserRole.ADMIN, UserRole.SELLER),
+  orderController.updatedOrderStatus,
+);
 router.get(
   "/customer/:customerId",
   auth(UserRole.CUSTOMER),

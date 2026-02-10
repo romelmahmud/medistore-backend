@@ -1,4 +1,4 @@
-import { Medicine } from "../../../generated/prisma/client";
+import { Medicine, OrderStatus } from "../../../generated/prisma/client";
 import { Decimal } from "../../../generated/prisma/internal/prismaNamespace";
 import { prisma } from "../../lib/prisma";
 
@@ -135,9 +135,24 @@ const getOrderById = async (orderId: string) => {
 
   return result;
 };
+
+const updateOrderStatus = async (orderId: string, status: OrderStatus) => {
+  const result = await prisma.order.update({
+    where: {
+      id: orderId,
+    },
+    data: {
+      status,
+    },
+  });
+
+  return result;
+};
+
 export const orderService = {
   createOrder,
   getAllOrders,
   getCustomerOrders,
   getOrderById,
+  updateOrderStatus,
 };
