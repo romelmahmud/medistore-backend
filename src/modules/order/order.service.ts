@@ -112,11 +112,22 @@ const getOrderById = async (orderId: string) => {
     where: {
       id: orderId,
     },
+    include: {
+      items: {
+        include: {
+          medicine: {
+            select: {
+              id: true,
+              name: true,
+            },
+          },
+        },
+      },
+    },
   });
 
   return result;
 };
-
 export const orderService = {
   createOrder,
   getAllOrders,
