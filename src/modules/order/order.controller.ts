@@ -19,8 +19,8 @@ const createOrder = async (req: Request, res: Response, next: NextFunction) => {
       shippingAddress,
       items,
     });
-    console.log("controller", result);
-    res.status(200).json({
+
+    res.status(201).json({
       success: true,
       data: result,
     });
@@ -29,6 +29,22 @@ const createOrder = async (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
+const getAllOrders = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const result = await orderService.getAllOrders();
+    res.status(200).json({
+      success: true,
+      data: result,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
 export const orderController = {
   createOrder,
+  getAllOrders,
 };
