@@ -24,6 +24,7 @@ const updateUserStatus = async (
 ) => {
   try {
     const status = req.body.status;
+    console.log("controller:", status);
 
     const { userId } = req.params;
 
