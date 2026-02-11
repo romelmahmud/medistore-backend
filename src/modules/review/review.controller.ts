@@ -35,9 +35,7 @@ const getMedicineReviews = async (
 ) => {
   try {
     const medicineId = req.params.medicineId;
-    const userId = req.user?.id; // optional, Better Auth optional mode
-
-    console.log(medicineId, userId);
+    const userId = req.user?.id;
 
     const result = await reviewService.getMedicineReviews(
       medicineId as string,

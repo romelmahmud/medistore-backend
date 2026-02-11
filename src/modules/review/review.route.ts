@@ -6,7 +6,7 @@ const router = express.Router();
 
 router.get(
   "/:medicineId",
-  auth(UserRole.ADMIN, UserRole.CUSTOMER, UserRole.SELLER, { optional: true }),
+
   reviewController.getMedicineReviews,
 );
 
