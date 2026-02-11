@@ -1,48 +1,53 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import { reviewService } from "./review.service";
 
-const createReview = async (req: Request, res: Response) => {
-  const userId = req.user?.id; // from auth middleware
+const createReview = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const userId = req.user?.id;
+    if (!userId)
+      return res.status(401).json({ success: false, message: "Unauthorized" });
 
-  if (!userId) {
-    return res.status(401).json({
-      success: false,
-      message: "Unauthorized",
-    });
+    const { medicineId, rating, comment } = req.body;
+
+    const review = await reviewService.createReview(
+      userId,
+      medicineId,
+      rating,
+      comment,
+    );
+
+    res
+      .status(201)
+      .json({ success: true, message: "Review submitted", data: review });
+  } catch (error) {
+    next(error);
   }
-
-  const { medicineId, rating, comment } = req.body;
-
-  const review = await reviewService.createReview(
-    userId,
-    medicineId,
-    rating,
-    comment,
-  );
-
-  res.status(201).json({
-    success: true,
-    message: "Review submitted successfully",
-    data: review,
-  });
 };
 
-const getMedicineReviews = async (req: Request, res: Response) => {
-  const { medicineId } = req.params;
-  const userId = req.user?.id; // optional (if logged in)
+const getMedicineReviews = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const medicineId = req.params.medicineId;
+    const userId = req.user?.id; // optional, Better Auth optional mode
 
-  const result = await reviewService.getMedicineReviews(
-    medicineId as string,
-    userId,
-  );
+    console.log(medicineId, userId);
 
-  res.status(200).json({
-    success: true,
-    data: result,
-  });
+    const result = await reviewService.getMedicineReviews(
+      medicineId as string,
+      userId,
+    );
+
+    res.status(200).json({ success: true, data: result });
+  } catch (error) {
+    next(error);
+  }
 };
 
-export const reviewController = {
-  createReview,
-  getMedicineReviews,
-};
+export const reviewController = { createReview, getMedicineReviews };

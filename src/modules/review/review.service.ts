@@ -7,28 +7,34 @@ const createReview = async (
   rating: number,
   comment?: string,
 ) => {
-  // 1️⃣ Check if user purchased & order delivered
-  const hasPurchased = await prisma.orderItem.findFirst({
+  // Only allow users who purchased the medicine
+  const purchased = await prisma.orderItem.findFirst({
     where: {
       medicineId,
       order: {
         userId,
-        status: OrderStatus.DELIVERED,
+        status: {
+          in: [
+            OrderStatus.PLACED,
+            OrderStatus.PROCESSING,
+            OrderStatus.SHIPPED,
+            OrderStatus.DELIVERED,
+          ],
+        },
       },
     },
   });
 
-  if (!hasPurchased) {
+  if (!purchased) {
     throw new Error("You can only review medicines you have purchased.");
   }
 
-  // 2️⃣ Create review (unique constraint will protect duplicate)
   const review = await prisma.review.create({
     data: {
-      rating,
-      comment: comment ?? null,
       userId,
       medicineId,
+      rating,
+      comment: comment ?? null,
     },
   });
 
@@ -39,20 +45,13 @@ const getMedicineReviews = async (
   medicineId: string,
   currentUserId?: string,
 ) => {
+  // Fetch all reviews
   const reviews = await prisma.review.findMany({
     where: { medicineId },
     include: {
-      user: {
-        select: {
-          id: true,
-          name: true,
-          image: true,
-        },
-      },
+      user: { select: { id: true, name: true, image: true } },
     },
-    orderBy: {
-      createdAt: "desc",
-    },
+    orderBy: { createdAt: "desc" },
   });
 
   let userMeta = {
@@ -61,25 +60,27 @@ const getMedicineReviews = async (
   };
 
   if (currentUserId) {
-    // check already reviewed
+    // Check if user already reviewed
     const existing = await prisma.review.findUnique({
-      where: {
-        userId_medicineId: {
-          userId: currentUserId,
-          medicineId,
-        },
-      },
+      where: { userId_medicineId: { userId: currentUserId, medicineId } },
     });
 
     userMeta.alreadyReviewed = !!existing;
 
-    // check purchased
+    // Check if user purchased (status PLACED or above)
     const purchased = await prisma.orderItem.findFirst({
       where: {
         medicineId,
         order: {
           userId: currentUserId,
-          status: OrderStatus.PLACED,
+          status: {
+            in: [
+              OrderStatus.PLACED,
+              OrderStatus.PROCESSING,
+              OrderStatus.SHIPPED,
+              OrderStatus.DELIVERED,
+            ],
+          },
         },
       },
     });
@@ -87,13 +88,7 @@ const getMedicineReviews = async (
     userMeta.canReview = !!purchased && !existing;
   }
 
-  return {
-    reviews,
-    userMeta,
-  };
+  return { reviews, userMeta };
 };
 
-export const reviewService = {
-  createReview,
-  getMedicineReviews,
-};
+export const reviewService = { createReview, getMedicineReviews };
