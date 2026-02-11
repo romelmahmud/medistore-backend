@@ -37,6 +37,8 @@ const getMedicineReviews = async (
     const medicineId = req.params.medicineId;
     const userId = req.user?.id;
 
+    console.log(userId);
+
     const result = await reviewService.getMedicineReviews(
       medicineId as string,
       userId,
