@@ -5,6 +5,7 @@ import { userController } from "./user.controller";
 const router = express.Router();
 
 router.get("/", auth(UserRole.ADMIN), userController.getAllUser);
+router.get("/me", auth(), userController.getMe);
 router.patch(
   "/:userId/status",
   auth(UserRole.ADMIN),

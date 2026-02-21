@@ -17,6 +17,27 @@ const getAllUser = async (req: Request, res: Response, next: NextFunction) => {
     next(error);
   }
 };
+
+const getMe = async (req: Request, res: Response, next: NextFunction) => {
+  const userId = req.user?.id as string;
+  console.log("userId", userId);
+  if (!userId) {
+    return res.status(401).json({
+      success: false,
+      message: "Unauthorized",
+    });
+  }
+  try {
+    const result = await userService.getMe(userId);
+    res.status(200).json({
+      success: true,
+      data: result,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 const updateUserStatus = async (
   req: Request,
   res: Response,
@@ -24,7 +45,6 @@ const updateUserStatus = async (
 ) => {
   try {
     const status = req.body.status;
-    console.log("controller:", status);
 
     const { userId } = req.params;
 
@@ -41,5 +61,6 @@ const updateUserStatus = async (
 
 export const userController = {
   getAllUser,
+  getMe,
   updateUserStatus,
 };

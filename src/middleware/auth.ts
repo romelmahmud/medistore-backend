@@ -24,10 +24,13 @@ const auth = (...roles: any) => {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
       const session = await betterAuth.api.getSession({
-        headers: req.headers as any,
+        headers: {
+          cookie: req.headers.cookie || "",
+        },
       });
+      console.log("req.headers.cookie:", req.headers.cookie);
 
-      // console.log(session);
+      console.log("session", session);
       if (!session) {
         return res.status(401).json({
           success: false,
@@ -35,12 +38,12 @@ const auth = (...roles: any) => {
         });
       }
 
-      if (!session.user.emailVerified) {
-        return res.status(403).json({
-          success: false,
-          message: "Email is not verified, please verify your email",
-        });
-      }
+      // if (!session.user.emailVerified) {
+      //   return res.status(403).json({
+      //     success: false,
+      //     message: "Email is not verified, please verify your email",
+      //   });
+      // }
       req.user = {
         id: session.user.id,
         email: session.user.email,

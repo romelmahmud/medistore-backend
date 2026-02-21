@@ -30,6 +30,19 @@ const getAllUser = async ({
   };
 };
 
+const getMe = async (userId: string) => {
+  const user = await prisma.user.findUnique({
+    where: {
+      id: userId,
+    },
+  });
+  if (!user) {
+    throw new Error("User not found");
+  }
+
+  return user;
+};
+
 const updateUserStatus = async (userId: string, status: Status) => {
   const updateUser = await prisma.user.update({
     where: {
@@ -46,4 +59,5 @@ const updateUserStatus = async (userId: string, status: Status) => {
 export const userService = {
   getAllUser,
   updateUserStatus,
+  getMe,
 };

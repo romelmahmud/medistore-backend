@@ -16,7 +16,12 @@ export const auth = betterAuth({
   database: prismaAdapter(prisma, {
     provider: "postgresql",
   }),
-  trustedOrigins: [process.env.APP_URL!],
+  cookie: {
+    httpOnly: true, // prevents JS from reading it
+    sameSite: "lax",
+    secure: false, // false for localhost (true for HTTPS in production)
+  },
+  trustedOrigins: ["http://localhost:3000"],
   user: {
     additionalFields: {
       role: {
@@ -191,13 +196,8 @@ export const auth = betterAuth({
           const allowedRoles = ["CUSTOMER", "SELLER"];
           user.role = allowedRoles.includes(user.role as string)
             ? user.role
-            : "CUSTOMER";
-          return {
-            data: {
-              ...user,
-              role: user.role,
-            },
-          };
+            : "CUSTOMER"; // ✅ ensures login allowed
+          return { data: { ...user, role: user.role } };
         },
       },
     },
