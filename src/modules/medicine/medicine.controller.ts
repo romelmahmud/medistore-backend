@@ -86,6 +86,26 @@ const getSingleMedicine = async (
   }
 };
 
+const getMedicineByCategory = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const { categoryId } = req.params;
+    const result = await medicineService.getMedicineByCategory(
+      categoryId as string,
+    );
+
+    res.status(200).json({
+      success: true,
+      data: result,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 const updateMedicine = async (
   req: Request,
   res: Response,
@@ -133,4 +153,5 @@ export const medicineController = {
   updateMedicine,
   deleteMedicine,
   createMedicine,
+  getMedicineByCategory,
 };

@@ -5,6 +5,7 @@ import { categoryController } from "./category.controller";
 const router = express.Router();
 
 router.get("/", categoryController.getAllCategory);
+
 router.get(
   "/:categoryId",
   auth(UserRole.ADMIN),

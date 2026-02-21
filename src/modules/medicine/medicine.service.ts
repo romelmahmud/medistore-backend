@@ -148,6 +148,22 @@ const getSingleMedicine = async (medicineId: string) => {
   };
 };
 
+const getMedicineByCategory = async (categoryId: string) => {
+  const result = await prisma.medicine.findMany({
+    where: {
+      categoryId,
+    },
+    include: {
+      category: true,
+    },
+  });
+
+  return result.map((med) => ({
+    ...med,
+    price: Number(med.price),
+  }));
+};
+
 const updateMedicine = async (
   payload: MedicineUpdateType,
   medicineId: string,
@@ -181,4 +197,5 @@ export const medicineService = {
   updateMedicine,
   deleteMedicine,
   createMedicine,
+  getMedicineByCategory,
 };
