@@ -5,7 +5,7 @@ import { medicineController } from "./medicine.controller";
 const router = express.Router();
 
 router.get("/", medicineController.getAllMedicine);
-router.get("/:categoryId", medicineController.getMedicineByCategory);
+router.get("/category/:categoryId", medicineController.getMedicineByCategory);
 router.get("/:medicineId", medicineController.getSingleMedicine);
 router.post(
   "/",
