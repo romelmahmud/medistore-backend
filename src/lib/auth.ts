@@ -13,7 +13,7 @@ export const auth = betterAuth({
     secure: true, // ✅ HTTPS on Render
   },
   trustedOrigins: [
-    "http://localhost:3000",
+    "https://medistore-frontend-pi.vercel.app",
     "https://medistore-backend-11jb.onrender.com",
   ],
   user: {

@@ -12,7 +12,10 @@ import { userRouter } from "./modules/user/user.route";
 const app: Application = express();
 app.use(
   cors({
-    origin: "http://localhost:3000",
+    origin: [
+      "https://medistore-frontend-pi.vercel.app",
+      "http://localhost:3000",
+    ],
     credentials: true,
   }),
 );
