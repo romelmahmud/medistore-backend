@@ -19,8 +19,8 @@ const getAllUser = async (req: Request, res: Response, next: NextFunction) => {
 };
 
 const getMe = async (req: Request, res: Response, next: NextFunction) => {
-  const userId = req.user?.id as string;
-  console.log("userId", userId);
+  const userId = req.user?.id;
+
   if (!userId) {
     return res.status(401).json({
       success: false,
@@ -28,7 +28,7 @@ const getMe = async (req: Request, res: Response, next: NextFunction) => {
     });
   }
   try {
-    const result = await userService.getMe(userId);
+    const result = await userService.getMe(userId as string);
     res.status(200).json({
       success: true,
       data: result,

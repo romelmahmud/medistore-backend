@@ -21,7 +21,7 @@ export const auth = betterAuth({
     sameSite: "lax",
     secure: false, // false for localhost (true for HTTPS in production)
   },
-  trustedOrigins: ["http://localhost:3000"],
+  trustedOrigins: [process.env.APP_URL!, "http://localhost:3000"],
   user: {
     additionalFields: {
       role: {
