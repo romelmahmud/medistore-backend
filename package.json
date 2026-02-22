@@ -6,9 +6,11 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "npx tsx watch src/server.ts",
-    "seed:admin": "npx tsx watch src/scripts/seedAdmin.ts",
-    "seed:category": "npx tsx watch src/scripts/seedCategory.ts",
-    "seed:medicine": "npx tsx watch src/scripts/seedMedicine.ts"
+    "start": "node dist/server.js",
+    "build": "tsc",
+    "seed:admin": "npx tsx src/scripts/seedAdmin.ts",
+    "seed:category": "npx tsx src/scripts/seedCategory.ts",
+    "seed:medicine": "npx tsx src/scripts/seedMedicine.ts"
   },
   "keywords": [],
   "author": "",
