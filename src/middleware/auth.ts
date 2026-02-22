@@ -28,9 +28,7 @@ const auth = (...roles: any) => {
           cookie: req.headers.cookie || "",
         },
       });
-      console.log("req.headers.cookie:", req.headers.cookie);
 
-      console.log("session", session);
       if (!session) {
         return res.status(401).json({
           success: false,

@@ -51,7 +51,7 @@ export const auth = betterAuth({
 
   //     sendVerificationEmail: async ({ user, url, token }, request) => {
   //       try {
-  //         // console.log({ user, url, token });
+
   //         const verificationUrl = `${process.env.APP_URL}/verify-email?token=${token}`;
   //         const info = await transporter.sendMail({
   //           from: '"Medi Store" <medistore@email.com>',
