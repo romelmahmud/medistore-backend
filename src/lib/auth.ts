@@ -2,24 +2,14 @@ import { betterAuth } from "better-auth";
 import { prismaAdapter } from "better-auth/adapters/prisma";
 import { prisma } from "./prisma";
 
-// const transporter = nodemailer.createTransport({
-//   host: "smtp.gmail.com",
-//   port: 587,
-//   secure: false, // Use true for port 465, false for port 587
-//   auth: {
-//     user: process.env.APP_USER,
-//     pass: process.env.APP_PASSWORD,
-//   },
-// });
-
 export const auth = betterAuth({
   database: prismaAdapter(prisma, {
     provider: "postgresql",
   }),
   cookie: {
-    httpOnly: true, // prevents JS from reading it
-    sameSite: "lax",
-    secure: false, // false for localhost (true for HTTPS in production)
+    httpOnly: true,
+    sameSite: "none", // REQUIRED for cross-site cookies
+    secure: true, // REQUIRED on Render (HTTPS)
   },
   trustedOrigins: [process.env.APP_URL!, "http://localhost:3000"],
   user: {
