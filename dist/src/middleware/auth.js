@@ -1,0 +1,52 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.UserRole = void 0;
+const auth_1 = require("../lib/auth");
+var UserRole;
+(function (UserRole) {
+    UserRole["CUSTOMER"] = "CUSTOMER";
+    UserRole["SELLER"] = "SELLER";
+    UserRole["ADMIN"] = "ADMIN";
+})(UserRole || (exports.UserRole = UserRole = {}));
+const auth = (...roles) => {
+    return async (req, res, next) => {
+        try {
+            const session = await auth_1.auth.api.getSession({
+                headers: {
+                    cookie: req.headers.cookie || "",
+                },
+            });
+            if (!session) {
+                return res.status(401).json({
+                    success: false,
+                    message: "you are not authorized",
+                });
+            }
+            // if (!session.user.emailVerified) {
+            //   return res.status(403).json({
+            //     success: false,
+            //     message: "Email is not verified, please verify your email",
+            //   });
+            // }
+            req.user = {
+                id: session.user.id,
+                email: session.user.email,
+                name: session.user.name,
+                role: session.user.role,
+                emailVerified: session.user.emailVerified,
+            };
+            if (roles.length && !roles.includes(req.user.role)) {
+                return res.status(403).json({
+                    success: false,
+                    message: "Forbidden: You don't have permission to access this resources",
+                });
+            }
+            next();
+        }
+        catch (error) {
+            next(error);
+        }
+    };
+};
+exports.default = auth;
+//# sourceMappingURL=auth.js.map

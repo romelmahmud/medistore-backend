@@ -4,10 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "npx tsx watch src/server.ts",
-    "start": "node dist/server.js",
     "build": "tsc",
+    "start": "node dist/src/server.js",
+    "postinstall": "prisma generate && npm run build",
     "seed:admin": "npx tsx src/scripts/seedAdmin.ts",
     "seed:category": "npx tsx src/scripts/seedCategory.ts",
     "seed:medicine": "npx tsx src/scripts/seedMedicine.ts"
