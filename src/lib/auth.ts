@@ -7,9 +7,10 @@ export const auth = betterAuth({
     provider: "postgresql",
   }),
   cookie: {
+    name: "better-auth.session_token", // default is fine
     httpOnly: true,
-    sameSite: "none", // REQUIRED for cross-site cookies
-    secure: true, // REQUIRED on Render (HTTPS)
+    sameSite: "none", // ✅ cross-site
+    secure: true, // ✅ HTTPS on Render
   },
   trustedOrigins: [
     "http://localhost:3000",

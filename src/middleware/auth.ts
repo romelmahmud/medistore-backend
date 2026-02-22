@@ -23,6 +23,7 @@ declare global {
 const auth = (...roles: any) => {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
+      console.log("Incoming cookies:", req.headers.cookie);
       const session = await betterAuth.api.getSession({
         headers: {
           cookie: req.headers.cookie || "",
