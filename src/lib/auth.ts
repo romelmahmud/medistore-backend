@@ -11,7 +11,10 @@ export const auth = betterAuth({
     sameSite: "none", // REQUIRED for cross-site cookies
     secure: true, // REQUIRED on Render (HTTPS)
   },
-  trustedOrigins: [process.env.APP_URL!, "http://localhost:3000"],
+  trustedOrigins: [
+    "http://localhost:3000",
+    "https://medistore-backend-11jb.onrender.com",
+  ],
   user: {
     additionalFields: {
       role: {
