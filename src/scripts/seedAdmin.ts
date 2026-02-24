@@ -22,7 +22,6 @@ async function seedAdmin() {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Origin: AUTH_BASE_URL,
       },
       body: JSON.stringify({
         email: ADMIN_EMAIL,
