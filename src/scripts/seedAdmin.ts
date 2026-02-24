@@ -2,9 +2,9 @@ import { prisma } from "../lib/prisma";
 import { UserRole } from "../middleware/auth";
 
 const AUTH_BASE_URL = process.env.BETTER_AUTH_URL!;
-const ADMIN_EMAIL = process.env.ADMIN_EMAIL!;
-const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD!;
-const ADMIN_NAME = "System Admin";
+const ADMIN_EMAIL = "test.admin@gmail.com";
+const ADMIN_PASSWORD = "password1234";
+const ADMIN_NAME = "Test Admin";
 
 async function seedAdmin() {
   try {
