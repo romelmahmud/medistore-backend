@@ -11,8 +11,8 @@ const getAllUser = async ({
   page: number;
 }) => {
   const result = await prisma.user.findMany({
-    skip,
     take: limit,
+    skip,
     orderBy: {
       createdAt: "desc",
     },
