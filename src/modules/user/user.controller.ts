@@ -4,9 +4,13 @@ import { userService } from "./user.service";
 
 const getAllUser = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { limit, skip, page } = paginationSortingHelper(req.query);
+    const options = paginationSortingHelper(req.query);
 
-    const result = await userService.getAllUser({ limit, skip, page });
+    const result = await userService.getAllUser({
+      limit: options.limit,
+      skip: options.skip,
+      page: options.page,
+    });
 
     res.status(200).json({
       success: true,
