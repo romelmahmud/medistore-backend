@@ -13,14 +13,8 @@ const getAllUser = async (req: Request, res: Response, next: NextFunction) => {
       page: options.page,
     });
 
-    // res.status(200).json({
-    //   success: true,
-    //   meta: result.meta,
-    //   data: result.data,
-    // });
     res.status(200).json({
       success: true,
-      debug: req.query, // 👈 temporary
       meta: result.meta,
       data: result.data,
     });
