@@ -39,7 +39,7 @@ export const auth = betterAuth({
     autoSignIn: false,
     // requireEmailVerification: true,
   },
-  //   emailVerification: {
+
   //     sendOnSignUp: true,
   //     autoSignInAfterVerification: true,
 
@@ -195,5 +195,19 @@ export const auth = betterAuth({
         },
       },
     },
+  },
+  session: {
+    cookieCache: {
+      enabled: true,
+      maxAge: 5 * 60,
+    },
+  },
+  advanced: {
+    cookiePrefix: "better-auth",
+    useSecureCookies: process.env.NODE_ENV === "production",
+    crossSubDomainCookies: {
+      enabled: false,
+    },
+    disableCSRFCheck: true,
   },
 });

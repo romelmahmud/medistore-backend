@@ -10,12 +10,26 @@ import { reviewRouter } from "./modules/review/review.route";
 import { userRouter } from "./modules/user/user.route";
 
 const app: Application = express();
+const allowedOrigins = [
+  process.env.APP_URL || "http://localhost:3000",
+  process.env.PROD_APP_URL,
+].filter(Boolean);
+
 app.use(
   cors({
-    origin: [
-      "https://medistore-frontend-pi.vercel.app",
-      "http://localhost:3000",
-    ],
+    origin: (origin, callback) => {
+      if (!origin) return callback(null, true);
+
+      const isAllowed =
+        allowedOrigins.includes(origin) ||
+        /^https:\/\/.*\.vercel\.app$/.test(origin);
+
+      if (isAllowed) {
+        callback(null, true);
+      } else {
+        callback(new Error(`Origin ${origin} not allowed by CORS`));
+      }
+    },
     credentials: true,
   }),
 );
